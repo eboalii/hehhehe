@@ -1,0 +1,15 @@
+version: "3.7"
+
+networks:
+  appnet:
+
+services:
+
+  app-service:
+    build: .
+    ports:
+      - "8881:8080"
+
+    networks:
+      - appnet
+ 
