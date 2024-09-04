@@ -1,0 +1,61 @@
+pipeline {
+  agent any
+  options {
+      // Keep the 10 most recent builds
+      buildDiscarder(logRotator(numToKeepStr:'10'))
+  }
+  tools {
+      maven 'jenkins-maven'
+      jdk 'jdk-17'
+  }
+  stages {
+    stage ('Initialize') {
+        steps {
+            bat "echo %PATH%"
+
+            echo "${env.GIT_BRANCH}"
+        }
+    }
+    stage ('Stop Containers') {
+        steps {
+          bat 'docker compose -f docker-compose-acc.yml down'
+        }
+    }
+    stage ('Test') {
+        steps {
+            bat 'mvn -Dmaven.test.failure.ignore=true test'
+        }
+        post {
+            success {
+                junit 'target/surefire-reports/**/*.xml'
+            }
+        }
+    }
+    stage ('Build') {
+        steps {
+            bat 'mvn -Dskip.tests=true package'
+        }
+
+    }
+    stage ('Start Containers') {
+        steps {
+            bat 'docker compose -f docker-compose-acc.yml up -d --build'
+        }
+    }
+    stage('Finalize') {
+      steps {
+        bat 'echo "Finalizing"'
+      }
+      post{
+        always {
+         mail bcc: '', body: 'Pipeline has been succesfully executed ', cc: '', from: 'cornelius.broekhuis@capgemini.com', replyTo: 'cornelius.broekhuis@capgemini.com', subject: 'Pipeline has been succesfully executed ', to: 'cornelius.broekhuis@capgemini.com'
+        }
+      }
+    }
+
+  }
+  environment {
+    DEMO = 'Mvn'
+  }
+
+}
