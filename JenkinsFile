@@ -28,6 +28,16 @@ pipeline {
         }
 
     }
+    stage ('Test') {
+        steps {
+            bat 'mvn -Dmaven.test.failure.ignore=true test'
+        }
+        post {
+            success {
+                junit 'target/surefire-reports/**/*.xml'
+            }
+        }
+    }
     stage ('Start Containers') {
         steps {
             bat 'docker compose up -d --build'
