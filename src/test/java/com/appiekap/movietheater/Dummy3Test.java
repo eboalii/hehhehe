@@ -1,4 +1,4 @@
-package com.academy.docker;
+package com.appiekap.movietheater;
 
 import org.junit.jupiter.api.Test;
 
