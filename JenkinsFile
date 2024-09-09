@@ -16,11 +16,11 @@ pipeline {
             echo "${env.GIT_BRANCH}"
         }
     }
-    stage ('Stop Containers') {
-        steps {
-          bat 'docker-compose down'
-        }
-    }
+//     stage ('Stop Containers') {
+//         steps {
+//           bat 'docker-compose down'
+//         }
+//     }
 
     stage ('Build') {
         steps {
@@ -38,11 +38,11 @@ pipeline {
             }
         }
     }
-    stage ('Start Containers') {
-        steps {
-            bat 'docker-compose up -d --build'
-        }
-    }
+//     stage ('Start Containers') {
+//         steps {
+//             bat 'docker-compose up -d --build'
+//         }
+//     }
 //     stage('Finalize') {
 //       steps {
 //         bat 'echo "Finalizing"'
